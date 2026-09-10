@@ -1,0 +1,1282 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>เนิร์ดเนื้อ Influencer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Anuphan:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg1:#5B7CFA; --bg2:#3450CE;
+  --shell:#FFFFFF; --side:#FAFAFB;
+  --ink:#1B1F27; --ink-2:#5A6270; --ink-3:#8D94A1;
+  --line:#EDEFF3; --line-2:#E2E5EB;
+  --accent:#5B5BD6; --accent-ink:#4740C4; --accent-soft:#EFEFFC; --accent-line:#D5D5F5;
+  --good:#15803D; --good-bg:#F0FDF4; --good-line:#BBF7D0;
+  --info:#1D4ED8; --info-bg:#EFF6FF; --info-line:#BFDBFE;
+  --warn:#B45309; --warn-bg:#FFFBEB; --warn-line:#FDE68A;
+  --bad:#DC2626; --bad-bg:#FEF2F2; --bad-line:#FECACA;
+  --mute:#5A6270; --mute-bg:#F4F5F7; --mute-line:#E4E7EC;
+  --gold:#E3A008;
+  --field:#FFFFFF;
+  --radius:12px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;
+  background:linear-gradient(158deg,var(--bg1) 0%,var(--bg2) 60%,#4438C8 100%);
+  color:var(--ink);font-family:"Plus Jakarta Sans","Anuphan",system-ui,sans-serif;
+  font-size:14px;line-height:1.5;-webkit-text-size-adjust:100%;padding:20px;}
+h1,h2,h3{margin:0;line-height:1.25;font-weight:700;letter-spacing:-.01em}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+[hidden]{display:none!important}
+
+/* ---------- login ---------- */
+.login-wrap{min-height:calc(100vh - 40px);display:grid;place-items:center;padding:20px}
+.login{background:#fff;border-radius:18px;padding:30px 28px;width:100%;max-width:380px;
+  box-shadow:0 24px 60px rgba(18,24,60,.3)}
+.login .mark{width:42px;height:42px;border-radius:12px;background:var(--accent);color:#fff;
+  display:grid;place-items:center;font-weight:700;font-family:"Anuphan",sans-serif;font-size:15px;margin-bottom:14px}
+.login h1{font-size:19px}
+.login p.sub{color:var(--ink-3);font-size:12.5px;margin:5px 0 20px}
+.login .f{margin-bottom:12px}
+.login label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:5px}
+.login input{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--line-2);background:#fff}
+.login input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.login .err{background:var(--bad-bg);border:1px solid var(--bad-line);color:var(--bad);
+  border-radius:9px;padding:9px 11px;font-size:12.5px;margin-bottom:12px}
+.login .btn{width:100%;justify-content:center;margin-top:4px}
+.login .hint{font-size:11.5px;color:var(--ink-3);margin:14px 0 0;line-height:1.6}
+.setup{background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn);
+  border-radius:10px;padding:12px 13px;font-size:12.5px;line-height:1.6}
+.setup code{background:rgba(0,0,0,.06);border-radius:4px;padding:1px 5px;
+  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px}
+
+/* ---------- app shell ---------- */
+.shell{max-width:1440px;margin:0 auto;background:var(--shell);border-radius:22px;
+  box-shadow:0 24px 60px rgba(18,24,60,.28),0 2px 6px rgba(18,24,60,.12);
+  display:grid;grid-template-columns:250px 1fr;overflow:hidden;}
+
+.side{background:var(--side);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;padding:18px 12px;gap:14px;}
+.brand{display:flex;align-items:center;gap:10px;padding:0 6px 2px}
+.brand .mark{width:34px;height:34px;border-radius:10px;flex:none;background:var(--accent);
+  color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;
+  font-family:"Anuphan",sans-serif;box-shadow:0 2px 6px rgba(91,91,214,.35)}
+.brand b{display:block;font-size:14.5px;font-weight:700;letter-spacing:-.01em}
+.brand span{display:block;font-size:11px;color:var(--ink-3);font-weight:500}
+
+.nav{display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1;min-height:0}
+.nav-label{font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+  color:var(--ink-3);padding:14px 10px 6px}
+.nav-item{display:flex;align-items:center;gap:9px;width:100%;text-align:left;
+  padding:8px 10px;border-radius:9px;border:none;background:transparent;color:var(--ink-2);
+  font-size:13px;font-weight:500;transition:background .12s,color .12s}
+.nav-item:hover{background:#F0F1F4;color:var(--ink)}
+.nav-item.active{background:#1E232C;color:#fff}
+.nav-item .swatch{width:8px;height:8px;border-radius:3px;flex:none}
+.nav-item .ico{width:16px;height:16px;flex:none;color:currentColor}
+.nav-item .label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-item .count{font-size:11.5px;font-weight:600;color:var(--ink-3);
+  background:#EDEEF1;padding:1px 7px;border-radius:999px;font-variant-numeric:tabular-nums}
+.nav-item.active .count{background:rgba(255,255,255,.18);color:#fff}
+
+.side-foot{border-top:1px solid var(--line);padding:12px 8px 2px;font-size:11.5px;color:var(--ink-3)}
+.side-foot .who{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.side-foot .live{width:7px;height:7px;border-radius:50%;background:#22C55E;flex:none;
+  box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+.side-foot .mail{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-2);font-weight:500}
+
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line)}
+.topbar h1{font-size:17px;display:flex;align-items:center;gap:9px}
+.topbar h1 svg{color:var(--ink-2)}
+.topbar .total{font-size:12px;font-weight:600;color:var(--ink-3);background:var(--mute-bg);
+  padding:2px 9px;border-radius:999px}
+.topbar .spacer{flex:1}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 14px;
+  border-radius:10px;border:1px solid var(--line-2);background:#fff;color:var(--ink);
+  font-size:13px;font-weight:600;transition:background .12s,border-color .12s;white-space:nowrap}
+.btn:hover{background:#F7F8FA}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;
+  box-shadow:0 2px 8px rgba(91,91,214,.32)}
+.btn.primary:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}
+.btn.ghost:hover{background:#F2F3F6;color:var(--ink)}
+.btn.sm{padding:7px 11px;font-size:12.5px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.nav-item:focus-visible,input:focus-visible,select:focus-visible,
+textarea:focus-visible,.icon-btn:focus-visible,.star-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.toolbar{display:flex;gap:9px;align-items:center;padding:14px 22px;flex-wrap:wrap}
+.search{position:relative;flex:1 1 260px;min-width:200px}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-3);pointer-events:none}
+.search input{width:100%;padding:10px 12px 10px 36px;border-radius:10px;border:1px solid var(--line-2);
+  background:var(--field);color:var(--ink);font-weight:500}
+.search input::placeholder{color:var(--ink-3);font-weight:400}
+.search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+select.sel{padding:10px 32px 10px 12px;border-radius:10px;border:1px solid var(--line-2);
+  background:var(--field);color:var(--ink);font-weight:500;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238D94A1' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center}
+select.sel:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+.chips{display:flex;gap:6px;align-items:center;padding:0 22px 10px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 8px 4px 10px;border-radius:999px;
+  background:var(--accent-soft);border:1px solid var(--accent-line);color:var(--accent-ink);
+  font-size:12px;font-weight:600}
+.chip button{border:none;background:none;color:inherit;padding:0;display:grid;place-items:center;opacity:.7}
+.chip button:hover{opacity:1}
+
+.table-scroll{flex:1;overflow:auto;min-height:0}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:1020px}
+thead th{position:sticky;top:0;background:#fff;z-index:2;text-align:left;
+  font-size:11.5px;font-weight:600;color:var(--ink-3);padding:10px 16px;
+  border-bottom:1px solid var(--line);border-top:1px solid var(--line);white-space:nowrap}
+tbody td{padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:13px}
+tbody tr{transition:background .1s}
+tbody tr:hover{background:#FAFBFC}
+
+.person{display:flex;align-items:center;gap:10px;min-width:0}
+.avatar{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;
+  color:#fff;font-weight:700;font-size:12.5px;letter-spacing:.2px}
+.person .who{min-width:0}
+.person b{display:block;font-size:13.5px;font-weight:600;letter-spacing:-.01em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.person .owner{font-size:11.5px;color:var(--ink-3)}
+
+.plats{display:flex;flex-direction:column;gap:6px}
+.plat{display:flex;align-items:center;gap:8px;min-width:0}
+.plat .logo{width:26px;height:26px;border-radius:7px;flex:none;display:grid;place-items:center;
+  color:#fff;font-size:10.5px;font-weight:700;letter-spacing:-.2px}
+.plat .meta{min-width:0;line-height:1.3}
+.plat .handle{font-size:12.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.plat .fol{font-size:11px;color:var(--ink-3)}
+.dash{color:var(--ink-3)}
+
+.contact-col{line-height:1.6}
+.contact-col .line{display:flex;align-items:center;gap:6px}
+.contact-col .val{font-size:12.5px;font-variant-numeric:tabular-nums}
+.contact-col .tag{font-size:10.5px;color:var(--ink-3);font-weight:600;width:30px;flex:none}
+
+.addr{max-width:250px}
+.addr .txt{font-size:12px;color:var(--ink-2);line-height:1.45;white-space:pre-line;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.addr .txt.none{color:var(--ink-3);font-style:italic}
+.copy-btn{margin-top:5px;display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:8px;
+  border:1px solid var(--line-2);background:#fff;color:var(--accent-ink);font-size:11.5px;font-weight:600}
+.copy-btn:hover{background:var(--accent-soft);border-color:var(--accent-line)}
+.copy-btn:disabled{opacity:.4;cursor:not-allowed}
+
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11.5px;
+  font-weight:600;border:1px solid transparent;white-space:nowrap}
+.badge.t-good{background:var(--good-bg);color:var(--good);border-color:var(--good-line)}
+.badge.t-info{background:var(--info-bg);color:var(--info);border-color:var(--info-line)}
+.badge.t-warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-line)}
+.badge.t-bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad-line)}
+.badge.t-mute{background:var(--mute-bg);color:var(--mute);border-color:var(--mute-line)}
+.badge.t-accent{background:var(--accent-soft);color:var(--accent-ink);border-color:var(--accent-line)}
+
+.stars{display:inline-flex;gap:1px}
+.star-btn{background:none;border:none;padding:1px;line-height:0;color:#D6D9DF;border-radius:4px;
+  transition:color .1s,transform .1s}
+.star-btn svg{display:block}
+.star-btn.filled{color:var(--gold)}
+.star-btn:hover{color:var(--gold);transform:scale(1.14)}
+
+.acts{display:flex;gap:2px;justify-content:flex-end}
+.icon-btn{width:30px;height:30px;display:grid;place-items:center;border-radius:8px;border:none;
+  background:transparent;color:var(--ink-3);transition:background .12s,color .12s}
+.icon-btn:hover{background:#F1F2F5;color:var(--ink)}
+.icon-btn.danger:hover{background:var(--bad-bg);color:var(--bad)}
+
+.notes{max-width:180px;font-size:12px;color:var(--ink-3);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+.banner{margin:0 22px 6px;padding:10px 13px;border-radius:10px;font-size:12.5px;
+  background:var(--bad-bg);border:1px solid var(--bad-line);color:var(--bad);display:flex;gap:9px}
+.banner .dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none;margin-top:5px}
+
+.empty{margin:16px 22px 28px;padding:56px 24px;text-align:center;border:1px dashed var(--line-2);
+  border-radius:14px;background:#FCFCFD}
+.empty .ico{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);color:var(--accent);
+  display:grid;place-items:center;margin:0 auto 14px}
+.empty h3{font-size:15.5px;margin-bottom:5px}
+.empty p{color:var(--ink-3);font-size:13px;margin:0 0 18px}
+
+.overlay{position:fixed;inset:0;background:rgba(20,24,40,.5);backdrop-filter:blur(2px);
+  display:flex;align-items:flex-start;justify-content:center;padding:28px 16px;z-index:100;overflow-y:auto}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:580px;
+  box-shadow:0 24px 60px rgba(15,20,45,.3)}
+.modal-head{display:flex;align-items:center;gap:10px;padding:18px 20px;border-bottom:1px solid var(--line)}
+.modal-head h2{font-size:16px;flex:1}
+.modal-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px;max-height:66vh;overflow-y:auto}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line)}
+
+.f{display:flex;flex-direction:column;gap:6px}
+.f label{font-size:12px;color:var(--ink-2);font-weight:600}
+.f label .req{color:var(--accent)}
+.f input,.f select,.f textarea{padding:9px 11px;border-radius:9px;border:1px solid var(--line-2);
+  background:var(--field);color:var(--ink);width:100%}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft)}
+.f textarea{resize:vertical;min-height:68px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+fieldset{border:1px solid var(--line);border-radius:11px;padding:12px;margin:0;background:#FCFCFD}
+legend{font-size:12px;color:var(--ink-2);font-weight:600;padding:0 5px}
+.plat-row{display:grid;grid-template-columns:1.1fr 1fr .85fr auto;gap:7px;align-items:center;margin-bottom:7px}
+.plat-row:last-child{margin-bottom:0}
+.rm-plat{border:none;background:transparent;color:var(--ink-3);padding:7px;border-radius:8px;display:grid;place-items:center}
+.rm-plat:hover{background:var(--bad-bg);color:var(--bad)}
+.star-picker{display:flex;gap:3px}
+.star-picker .star-btn svg{width:24px;height:24px}
+
+.drop{border:1.5px dashed var(--line-2);border-radius:12px;background:#FCFCFD;padding:26px 18px;
+  text-align:center;cursor:pointer;transition:border-color .12s,background .12s}
+.drop:hover,.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop .ico{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent);
+  display:grid;place-items:center;margin:0 auto 10px}
+.drop.over .ico{background:#fff}
+.drop b{display:block;font-size:13.5px;font-weight:600}
+.drop span{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.help{background:#FCFCFD;border:1px solid var(--line);border-radius:11px;padding:12px 13px;font-size:12px;color:var(--ink-2)}
+.help b{font-size:12px;display:block;margin-bottom:5px}
+.help code{background:var(--mute-bg);border-radius:5px;padding:1px 5px;font-size:11.5px;
+  font-family:ui-monospace,Menlo,Consolas,monospace}
+.help ul{margin:6px 0 0;padding-left:18px;line-height:1.7}
+.imp-sum{display:flex;gap:8px;flex-wrap:wrap}
+.imp-note{font-size:12px;color:var(--ink-3);line-height:1.6}
+.prev-wrap{border:1px solid var(--line);border-radius:11px;overflow:auto;max-height:220px}
+.prev-wrap table{min-width:520px}
+.prev-wrap th{position:sticky;top:0;background:#FAFAFB;font-size:11px;padding:7px 10px;
+  border-bottom:1px solid var(--line);color:var(--ink-3);text-align:left;white-space:nowrap}
+.prev-wrap td{padding:7px 10px;border-bottom:1px solid var(--line);font-size:12px;vertical-align:top}
+.prev-wrap tr:last-child td{border-bottom:none}
+.prev-wrap .cell{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);
+  background:#1E232C;color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;font-weight:500;
+  box-shadow:0 12px 30px rgba(15,20,45,.35);opacity:0;pointer-events:none;transition:.18s;z-index:200}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (min-width:901px){ .shell{height:calc(100vh - 40px)} }
+@media (max-width:900px){
+  body{padding:10px}
+  .shell{grid-template-columns:1fr;border-radius:16px}
+  .side{border-right:none;border-bottom:1px solid var(--line);padding:14px}
+  .nav{flex-direction:row;flex-wrap:wrap;gap:6px;overflow:visible}
+  .nav-label{padding:6px 2px;width:100%}
+  .nav-item{width:auto}
+  .topbar,.toolbar,.chips{padding-left:14px;padding-right:14px}
+  .banner{margin-left:14px;margin-right:14px}
+  .empty{margin:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- ---------- login ---------- -->
+<div class="login-wrap" id="loginWrap" hidden>
+  <form class="login" id="loginForm">
+    <div class="mark">นน</div>
+    <h1>เนิร์ดเนื้อ Influencer</h1>
+    <p class="sub">เข้าสู่ระบบด้วยบัญชีทีมเพื่อดูฐานข้อมูล</p>
+    <div class="setup" id="setupNote" hidden></div>
+    <div class="err" id="loginErr" hidden></div>
+    <div class="f">
+      <label for="email">อีเมลทีม</label>
+      <input type="email" id="email" autocomplete="username" required placeholder="team@example.com">
+    </div>
+    <div class="f">
+      <label for="password">รหัสผ่าน</label>
+      <input type="password" id="password" autocomplete="current-password" required placeholder="••••••••">
+    </div>
+    <button type="submit" class="btn primary" id="btnLogin">เข้าสู่ระบบ</button>
+    <p class="hint">ทีมใช้บัญชีเดียวร่วมกันได้ ระบบจะจำการเข้าสู่ระบบไว้ในเครื่องนี้จนกดออกจากระบบ</p>
+  </form>
+</div>
+
+<!-- ---------- app ---------- -->
+<div class="shell" id="shell" hidden>
+  <aside class="side">
+    <div class="brand">
+      <div class="mark">นน</div>
+      <div>
+        <b>เนิร์ดเนื้อ</b>
+        <span>Influencer Directory</span>
+      </div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot">
+      <div class="who">
+        <span class="live" id="liveDot"></span>
+        <span class="mail" id="whoMail">—</span>
+      </div>
+      <button class="btn sm ghost" id="btnLogout" style="width:100%">ออกจากระบบ</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h1>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M16 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 17.5V19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M20 19v-1.4a3.5 3.5 0 0 0-2.6-3.4M15.5 5.3a3.2 3.2 0 0 1 0 5.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Influencer
+      </h1>
+      <span class="total" id="totalPill">0 ราย</span>
+      <div class="spacer"></div>
+      <button class="btn primary" id="btnAdd" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>
+        เพิ่ม Influencer
+      </button>
+    </div>
+
+    <div class="banner" id="errBanner" hidden>
+      <span class="dot"></span>
+      <span id="errBannerText"></span>
+    </div>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20.5 20.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="searchInput" placeholder="ค้นหาชื่อ, ไอดี, ผู้ดูแล, ที่อยู่...">
+      </div>
+      <select class="sel" id="sortSelect">
+        <option value="new">ล่าสุดก่อน</option>
+        <option value="rating-desc">ดาวมากไปน้อย</option>
+        <option value="rating-asc">ดาวน้อยไปมาก</option>
+        <option value="name">เรียงตามชื่อ</option>
+      </select>
+      <button class="btn" id="btnImport" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+        นำเข้า CSV
+      </button>
+      <button class="btn" id="btnExport" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0 0l4.5-4.5M12 16l-4.5-4.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+        ส่งออก CSV
+      </button>
+    </div>
+
+    <div class="chips" id="chips"></div>
+
+    <div class="table-scroll" id="tableWrap" hidden>
+      <table>
+        <thead>
+          <tr>
+            <th>ชื่อ / ผู้ดูแล</th>
+            <th>แพลตฟอร์ม</th>
+            <th>ติดต่อ</th>
+            <th>ที่อยู่จัดส่ง</th>
+            <th>ให้ดาว</th>
+            <th>สถานะ</th>
+            <th>หมายเหตุ</th>
+            <th style="text-align:right">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="empty" id="emptyState" hidden>
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M16 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 17.5V19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/></svg>
+      </div>
+      <h3 id="emptyTitle">ยังไม่มีรายชื่อ Influencer</h3>
+      <p id="emptyText">เริ่มเพิ่มรายชื่อแรกได้เลย ข้อมูลจะแชร์ให้ทุกคนในทีมเห็นทันที</p>
+      <button class="btn primary" id="btnAddEmpty" type="button">+ เพิ่ม Influencer คนแรก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- edit modal ---------- -->
+<div class="overlay" id="overlay" hidden>
+  <form class="modal" id="modalForm">
+    <div class="modal-head">
+      <h2 id="modalTitle">เพิ่ม Influencer</h2>
+      <button type="button" class="icon-btn" id="btnClose" aria-label="ปิด">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="f2">
+        <div class="f">
+          <label>ชื่อ / ชื่อเล่น <span class="req">*</span></label>
+          <input type="text" id="fName" required placeholder="เช่น น้องพลอย">
+        </div>
+        <div class="f">
+          <label>ผู้ดูแลในทีม</label>
+          <input type="text" id="fOwner" placeholder="เช่น มิ้นท์">
+        </div>
+      </div>
+
+      <fieldset>
+        <legend>แพลตฟอร์ม</legend>
+        <div id="platRows"></div>
+        <button type="button" class="btn sm ghost" id="btnAddPlat" style="margin-top:6px">+ เพิ่มแพลตฟอร์ม</button>
+      </fieldset>
+
+      <div class="f2">
+        <div class="f">
+          <label>เบอร์โทร</label>
+          <input type="text" id="fPhone" placeholder="08x-xxx-xxxx">
+        </div>
+        <div class="f">
+          <label>LINE ID</label>
+          <input type="text" id="fLine" placeholder="line id">
+        </div>
+      </div>
+
+      <div class="f">
+        <label>ชื่อผู้รับของ (ถ้าต่างจากชื่อ Influencer)</label>
+        <input type="text" id="fRecipient" placeholder="ชื่อ-นามสกุลผู้รับพัสดุ">
+      </div>
+
+      <div class="f">
+        <label>ที่อยู่จัดส่งเต็ม <span class="req">*</span></label>
+        <textarea id="fAddress" required placeholder="บ้านเลขที่ ถนน ตำบล/แขวง อำเภอ/เขต จังหวัด รหัสไปรษณีย์"></textarea>
+      </div>
+
+      <div class="f2">
+        <div class="f">
+          <label>สถานะ</label>
+          <select id="fStatus"></select>
+        </div>
+        <div class="f">
+          <label>ยอดผู้ติดตามรวม (โดยประมาณ)</label>
+          <input type="text" id="fFollowSummary" placeholder="เช่น รวม ~50K">
+        </div>
+      </div>
+
+      <div class="f">
+        <label>ให้ดาว (คุณภาพงาน / ความน่าเชื่อถือ)</label>
+        <div class="star-picker" id="fRatingPicker"></div>
+      </div>
+
+      <div class="f">
+        <label>หมายเหตุ</label>
+        <textarea id="fNotes" placeholder="สไตล์คอนเทนต์, เคยส่งอะไรไปแล้ว, ข้อควรระวัง ฯลฯ"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn" id="btnDelete" style="margin-right:auto;color:var(--bad);border-color:var(--bad-line)" hidden>ลบรายชื่อนี้</button>
+      <button type="button" class="btn" id="btnCancel">ยกเลิก</button>
+      <button type="submit" class="btn primary" id="btnSave">บันทึก</button>
+    </div>
+  </form>
+</div>
+
+<!-- ---------- import modal ---------- -->
+<div class="overlay" id="importOverlay" hidden>
+  <div class="modal">
+    <div class="modal-head">
+      <h2>นำเข้าจากไฟล์ CSV</h2>
+      <button type="button" class="icon-btn" id="btnImpClose" aria-label="ปิด">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="drop" id="dropZone">
+        <input type="file" id="csvFile" accept=".csv,text/csv,text/plain" hidden>
+        <div class="ico">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+        </div>
+        <b>ลากไฟล์ CSV มาวางที่นี่</b>
+        <span>หรือคลิกเพื่อเลือกไฟล์ · รองรับไฟล์จาก Excel และ Google Sheets</span>
+      </div>
+
+      <div class="help">
+        <b>หัวตารางที่รองรับ (แถวแรกของไฟล์)</b>
+        <code>ชื่อ, ผู้ดูแล, แพลตฟอร์ม, ไอดี, ผู้ติดตาม, เบอร์โทร, LINE, ชื่อผู้รับ, ที่อยู่, สถานะ, ดาว, หมายเหตุ</code>
+        <ul>
+          <li>ต้องมีคอลัมน์ <b>ชื่อ</b> และ <b>ที่อยู่</b> เป็นอย่างน้อย แถวที่ขาดสองอันนี้จะถูกข้าม</li>
+          <li>1 แถว = 1 คน (1 แพลตฟอร์ม) ถ้าคนเดียวมีหลายแพลตฟอร์ม เพิ่มที่หน้าแก้ไขทีหลังได้</li>
+          <li>ชื่อคอลัมน์ภาษาอังกฤษก็ได้ (name, owner, platform, handle, followers, phone, line, recipient, address, status, rating, notes)</li>
+        </ul>
+        <button type="button" class="btn sm" id="btnCopyHeader" style="margin-top:9px">คัดลอกหัวตารางไปใช้</button>
+      </div>
+
+      <div class="imp-sum" id="impSummary"></div>
+      <div id="impPreview"></div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn" id="btnImpCancel">ยกเลิก</button>
+      <button type="button" class="btn primary" id="btnDoImport" disabled>นำเข้า</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+/* =========================================================
+   ตั้งค่าเชื่อม Supabase — แก้ 2 บรรทัดนี้ให้ตรงกับโปรเจกต์
+   ========================================================= */
+const SUPABASE_URL = "https://isbmudrwmokzcgrklial.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_qOI7FLMW6Wv9cenLepnfqA_6Xck6aQK";
+/* ========================================================= */
+
+const CONFIGURED = !SUPABASE_URL.startsWith('__') && !SUPABASE_PUBLISHABLE_KEY.startsWith('__');
+const sb = CONFIGURED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
+
+const PLATFORMS = [
+  {key:'instagram', label:'Instagram', short:'IG', color:'#D6295E'},
+  {key:'tiktok',    label:'TikTok',    short:'TT', color:'#111827'},
+  {key:'facebook',  label:'Facebook',  short:'FB', color:'#2563EB'},
+  {key:'youtube',   label:'YouTube',   short:'YT', color:'#DC2626'},
+  {key:'lemon8',    label:'Lemon8',    short:'L8', color:'#CA8A04'},
+  {key:'x',         label:'X (Twitter)', short:'X', color:'#374151'},
+  {key:'other',     label:'อื่นๆ',      short:'••', color:'#78838F'},
+];
+const PLATFORM_MAP = Object.fromEntries(PLATFORMS.map(p => [p.key, p]));
+
+const STATUSES = [
+  {key:'new',       label:'ใหม่',       tone:'info',   dot:'#3B82F6'},
+  {key:'waiting',   label:'รอตอบกลับ',  tone:'warn',   dot:'#F59E0B'},
+  {key:'confirmed', label:'ตกลงแล้ว',   tone:'good',   dot:'#22C55E'},
+  {key:'shipped',   label:'จัดส่งแล้ว', tone:'accent', dot:'#6366F1'},
+  {key:'closed',    label:'ปิดเคส',     tone:'mute',   dot:'#9CA3AF'},
+  {key:'declined',  label:'ไม่สนใจ',    tone:'bad',    dot:'#EF4444'},
+];
+const STATUS_MAP = Object.fromEntries(STATUSES.map(s => [s.key, s]));
+const AVATAR_COLORS = ['#E8815A','#5B8DEF','#3FA88C','#C56AC4','#DDA032','#6F7BD6','#DB6A8F','#4FA3C7'];
+
+let rows = [];
+let editingId = null;
+let platRowCount = 0;
+let formRating = 0;
+let filterStatus = '';
+let filterPlatform = '';
+
+const $ = (id) => document.getElementById(id);
+
+/* ---------- helpers ---------- */
+const STAR_PATH = "M12 2.6l2.75 5.57 6.15.9-4.45 4.34 1.05 6.12L12 16.66l-5.5 2.87 1.05-6.12L3.1 9.07l6.15-.9L12 2.6z";
+function starSvg(filled, size){
+  size = size || 16;
+  return filled
+    ? `<svg width="${size}" height="${size}" viewBox="0 0 24 24"><path d="${STAR_PATH}" fill="currentColor"/></svg>`
+    : `<svg width="${size}" height="${size}" viewBox="0 0 24 24"><path d="${STAR_PATH}" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>`;
+}
+function escapeHtml(str){
+  return String(str==null?'':str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function initials(name){
+  const parts = String(name||'?').trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return '?';
+  if(parts.length === 1) return parts[0].slice(0,2);
+  return parts[0][0] + parts[1][0];
+}
+function avatarColor(name){
+  let h = 0; const s = String(name||'');
+  for(let i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i)) % 9973;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+function showToast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('show'), 1700);
+}
+function copyText(text){
+  if(!text){ showToast('ไม่มีข้อมูลให้คัดลอก'); return; }
+  const done = () => showToast('คัดลอกแล้ว');
+  const fail = () => {
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta); done();
+    }catch(e){ showToast('คัดลอกไม่สำเร็จ'); }
+  };
+  if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done).catch(fail);
+  else fail();
+}
+function formatAddressBlock(row){
+  const lines = [];
+  const recipient = row.recipientName || row.name;
+  if(recipient) lines.push(recipient);
+  if(row.phone) lines.push('โทร ' + row.phone);
+  if(row.addressText) lines.push(row.addressText);
+  return lines.join('\n');
+}
+function showError(msg){
+  $('errBanner').hidden = !msg;
+  $('errBannerText').textContent = msg || '';
+}
+
+/* ---------- db mapping ---------- */
+function fromDb(r){
+  return {
+    id: r.id,
+    name: r.name || '',
+    owner: r.owner || '',
+    platforms: Array.isArray(r.platforms) ? r.platforms : [],
+    phone: r.phone || '',
+    lineId: r.line_id || '',
+    recipientName: r.recipient_name || '',
+    addressText: r.address_text || '',
+    followSummary: r.follow_summary || '',
+    status: r.status || 'new',
+    rating: r.rating || 0,
+    notes: r.notes || '',
+    createdAt: r.created_at,
+  };
+}
+function toDb(v){
+  return {
+    name: v.name,
+    owner: v.owner || '',
+    platforms: v.platforms || [],
+    phone: v.phone || '',
+    line_id: v.lineId || '',
+    recipient_name: v.recipientName || '',
+    address_text: v.addressText || '',
+    follow_summary: v.followSummary || '',
+    status: v.status || 'new',
+    rating: v.rating || 0,
+    notes: v.notes || '',
+  };
+}
+
+/* ---------- platform rows in form ---------- */
+function platRowHtml(idx, data){
+  data = data || {};
+  const opts = PLATFORMS.map(p => `<option value="${p.key}" ${data.platform===p.key?'selected':''}>${p.label}</option>`).join('');
+  return `<div class="plat-row" data-idx="${idx}">
+    <select class="plat-select">${opts}</select>
+    <input type="text" class="plat-handle" placeholder="@handle" value="${escapeHtml(data.handle||'')}">
+    <input type="text" class="plat-followers" placeholder="ผู้ติดตาม" value="${escapeHtml(data.followers||'')}">
+    <button type="button" class="rm-plat" aria-label="ลบแพลตฟอร์มนี้">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>`;
+}
+function addPlatRow(data){
+  const wrap = $('platRows');
+  const div = document.createElement('div');
+  div.innerHTML = platRowHtml(platRowCount++, data);
+  const rowEl = div.firstElementChild;
+  rowEl.querySelector('.rm-plat').addEventListener('click', () => {
+    if(wrap.children.length > 1) rowEl.remove();
+    else showToast('ต้องมีอย่างน้อย 1 แพลตฟอร์ม');
+  });
+  wrap.appendChild(rowEl);
+}
+function resetPlatRows(list){
+  $('platRows').innerHTML = '';
+  platRowCount = 0;
+  if(list && list.length) list.forEach(p => addPlatRow(p));
+  else addPlatRow({platform:'instagram'});
+}
+function readPlatRows(){
+  return Array.from($('platRows').children).map(r => ({
+    platform: r.querySelector('.plat-select').value,
+    handle: r.querySelector('.plat-handle').value.trim(),
+    followers: r.querySelector('.plat-followers').value.trim(),
+  })).filter(p => p.handle || p.followers);
+}
+
+/* ---------- modal ---------- */
+function populateStatusSelect(){
+  $('fStatus').innerHTML = STATUSES.map(s => `<option value="${s.key}">${s.label}</option>`).join('');
+}
+function renderRatingPicker(){
+  const wrap = $('fRatingPicker');
+  wrap.innerHTML = '';
+  for(let n=1;n<=5;n++){
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'star-btn' + (n<=formRating ? ' filled' : '');
+    btn.setAttribute('aria-label', 'ให้ ' + n + ' ดาว');
+    btn.title = n + ' ดาว';
+    btn.innerHTML = starSvg(n<=formRating, 24);
+    btn.addEventListener('click', () => { formRating = (formRating === n) ? 0 : n; renderRatingPicker(); });
+    wrap.appendChild(btn);
+  }
+}
+function openModal(row){
+  editingId = row ? row.id : null;
+  $('modalTitle').textContent = row ? 'แก้ไข Influencer' : 'เพิ่ม Influencer';
+  $('fName').value = row?.name || '';
+  $('fOwner').value = row?.owner || '';
+  $('fPhone').value = row?.phone || '';
+  $('fLine').value = row?.lineId || '';
+  $('fRecipient').value = row?.recipientName || '';
+  $('fAddress').value = row?.addressText || '';
+  $('fFollowSummary').value = row?.followSummary || '';
+  $('fNotes').value = row?.notes || '';
+  $('fStatus').value = row?.status || 'new';
+  formRating = row?.rating || 0;
+  renderRatingPicker();
+  resetPlatRows(row?.platforms);
+  $('btnDelete').hidden = !row;
+  $('overlay').hidden = false;
+  $('fName').focus();
+}
+function closeModal(){ $('overlay').hidden = true; editingId = null; }
+
+/* ---------- sidebar ---------- */
+function renderSidebar(){
+  const statusCounts = {}; STATUSES.forEach(s => statusCounts[s.key] = 0);
+  const platCounts = {};   PLATFORMS.forEach(p => platCounts[p.key] = 0);
+  rows.forEach(r => {
+    if(statusCounts[r.status] !== undefined) statusCounts[r.status]++;
+    (r.platforms||[]).forEach(p => { if(platCounts[p.platform] !== undefined) platCounts[p.platform]++; });
+  });
+
+  let html = `<button type="button" class="nav-item ${!filterStatus && !filterPlatform ? 'active':''}" data-all="1">
+    <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <span class="label">ทั้งหมด</span><span class="count">${rows.length}</span></button>`;
+  html += `<div class="nav-label">สถานะ</div>`;
+  STATUSES.forEach(s => {
+    html += `<button type="button" class="nav-item ${filterStatus===s.key?'active':''}" data-status="${s.key}">
+      <span class="swatch" style="background:${s.dot}"></span>
+      <span class="label">${s.label}</span><span class="count">${statusCounts[s.key]}</span></button>`;
+  });
+  html += `<div class="nav-label">แพลตฟอร์ม</div>`;
+  PLATFORMS.forEach(p => {
+    html += `<button type="button" class="nav-item ${filterPlatform===p.key?'active':''}" data-platform="${p.key}">
+      <span class="swatch" style="background:${p.color}"></span>
+      <span class="label">${escapeHtml(p.label)}</span><span class="count">${platCounts[p.key]}</span></button>`;
+  });
+
+  const nav = $('nav');
+  nav.innerHTML = html;
+  nav.querySelectorAll('[data-all]').forEach(b => b.addEventListener('click', () => {
+    filterStatus = ''; filterPlatform = ''; render();
+  }));
+  nav.querySelectorAll('[data-status]').forEach(b => b.addEventListener('click', () => {
+    const k = b.getAttribute('data-status');
+    filterStatus = (filterStatus === k) ? '' : k; render();
+  }));
+  nav.querySelectorAll('[data-platform]').forEach(b => b.addEventListener('click', () => {
+    const k = b.getAttribute('data-platform');
+    filterPlatform = (filterPlatform === k) ? '' : k; render();
+  }));
+}
+
+function renderChips(){
+  const parts = [];
+  const x = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+  if(filterStatus) parts.push(`<span class="chip">สถานะ: ${STATUS_MAP[filterStatus].label}
+    <button type="button" data-clear="status" aria-label="ล้างตัวกรองสถานะ">${x}</button></span>`);
+  if(filterPlatform) parts.push(`<span class="chip">แพลตฟอร์ม: ${escapeHtml(PLATFORM_MAP[filterPlatform].label)}
+    <button type="button" data-clear="platform" aria-label="ล้างตัวกรองแพลตฟอร์ม">${x}</button></span>`);
+  const box = $('chips');
+  box.innerHTML = parts.join('');
+  box.querySelectorAll('[data-clear]').forEach(b => b.addEventListener('click', () => {
+    if(b.getAttribute('data-clear') === 'status') filterStatus = ''; else filterPlatform = '';
+    render();
+  }));
+}
+
+/* ---------- table ---------- */
+function matchesFilters(row){
+  const q = $('searchInput').value.trim().toLowerCase();
+  if(filterPlatform && !(row.platforms||[]).some(p => p.platform === filterPlatform)) return false;
+  if(filterStatus && row.status !== filterStatus) return false;
+  if(q){
+    const hay = [row.name, row.owner, row.recipientName, row.notes, row.phone, row.lineId, row.addressText,
+      ...(row.platforms||[]).map(p => p.handle)].join(' ').toLowerCase();
+    if(!hay.includes(q)) return false;
+  }
+  return true;
+}
+function starsHtml(row){
+  const rating = row.rating || 0;
+  let out = '';
+  for(let n=1;n<=5;n++){
+    out += `<button type="button" class="star-btn ${n<=rating?'filled':''}" data-star-id="${row.id}" data-star-value="${n}" aria-label="ให้ ${n} ดาว" title="ให้ ${n} ดาว">${starSvg(n<=rating)}</button>`;
+  }
+  return `<div class="stars">${out}</div>`;
+}
+
+async function updateRating(id, n){
+  const row = rows.find(r => r.id === id);
+  const current = row ? (row.rating||0) : 0;
+  const next = current === n ? 0 : n;
+  if(row){ row.rating = next; render(); }
+  const { error } = await sb.from('influencers').update({ rating: next }).eq('id', id);
+  if(error){ showToast('ให้ดาวไม่สำเร็จ: ' + error.message); loadRows(); }
+}
+
+async function removeRow(id){
+  const row = rows.find(r => r.id === id);
+  if(!confirm('ลบ "' + (row ? row.name : 'รายชื่อนี้') + '" ออกจากฐานข้อมูล?')) return;
+  const { error } = await sb.from('influencers').delete().eq('id', id);
+  if(error) showToast('ลบไม่สำเร็จ: ' + error.message);
+  else { showToast('ลบแล้ว'); loadRows(); }
+}
+
+function render(){
+  renderSidebar();
+  renderChips();
+  $('totalPill').textContent = rows.length + ' ราย';
+
+  let list = rows.filter(matchesFilters);
+  const sortMode = $('sortSelect').value;
+  if(sortMode === 'rating-desc') list = list.slice().sort((a,b) => (b.rating||0)-(a.rating||0));
+  else if(sortMode === 'rating-asc') list = list.slice().sort((a,b) => (a.rating||0)-(b.rating||0));
+  else if(sortMode === 'name') list = list.slice().sort((a,b) => String(a.name||'').localeCompare(String(b.name||''),'th'));
+
+  if(rows.length === 0){
+    $('tableWrap').hidden = true; $('emptyState').hidden = false;
+    $('emptyTitle').textContent = 'ยังไม่มีรายชื่อ Influencer';
+    $('emptyText').textContent = 'เริ่มเพิ่มรายชื่อแรกได้เลย ข้อมูลจะแชร์ให้ทุกคนในทีมเห็นทันที';
+    $('btnAddEmpty').hidden = false;
+    return;
+  }
+  if(list.length === 0){
+    $('tableWrap').hidden = true; $('emptyState').hidden = false;
+    $('emptyTitle').textContent = 'ไม่พบรายชื่อที่ตรงกับตัวกรอง';
+    $('emptyText').textContent = 'ลองล้างคำค้นหา หรือกด "ทั้งหมด" ในเมนูด้านซ้าย';
+    $('btnAddEmpty').hidden = true;
+    return;
+  }
+  $('emptyState').hidden = true;
+  $('tableWrap').hidden = false;
+
+  $('tbody').innerHTML = list.map(row => {
+    const plats = (row.platforms||[]).map(p => {
+      const meta = PLATFORM_MAP[p.platform] || PLATFORM_MAP.other;
+      return `<div class="plat">
+        <span class="logo" style="background:${meta.color}">${meta.short}</span>
+        <span class="meta">
+          <span class="handle">${escapeHtml(p.handle || meta.label)}</span>
+          ${p.followers ? `<span class="fol">${escapeHtml(p.followers)} ผู้ติดตาม</span>` : ''}
+        </span></div>`;
+    }).join('') || '<span class="dash">—</span>';
+
+    const status = STATUS_MAP[row.status] || STATUSES[0];
+    const hasAddr = !!row.addressText;
+    const addressBlock = formatAddressBlock(row);
+    const copyIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M5 15V5.5A2.5 2.5 0 0 1 7.5 3H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+
+    return `<tr>
+      <td>
+        <div class="person">
+          <span class="avatar" style="background:${avatarColor(row.name)}">${escapeHtml(initials(row.name))}</span>
+          <span class="who">
+            <b>${escapeHtml(row.name)}</b>
+            ${row.owner ? `<span class="owner">ดูแลโดย ${escapeHtml(row.owner)}</span>` : ''}
+          </span>
+        </div>
+      </td>
+      <td><div class="plats">${plats}</div></td>
+      <td class="contact-col">
+        ${row.phone ? `<div class="line"><span class="tag">โทร</span><span class="val">${escapeHtml(row.phone)}</span>
+          <button type="button" class="icon-btn" data-copy="${escapeHtml(row.phone)}" title="คัดลอกเบอร์โทร" aria-label="คัดลอกเบอร์โทร" style="width:24px;height:24px">${copyIcon}</button></div>` : ''}
+        ${row.lineId ? `<div class="line"><span class="tag">LINE</span><span class="val">${escapeHtml(row.lineId)}</span></div>` : ''}
+        ${!row.phone && !row.lineId ? '<span class="dash">—</span>' : ''}
+      </td>
+      <td class="addr">
+        <div class="txt ${hasAddr?'':'none'}">${hasAddr ? escapeHtml(row.addressText) : 'ยังไม่มีที่อยู่'}</div>
+        <button type="button" class="copy-btn" data-copy-addr="${row.id}" ${addressBlock?'':'disabled'}>${copyIcon} คัดลอกที่อยู่</button>
+      </td>
+      <td>${starsHtml(row)}</td>
+      <td><span class="badge t-${status.tone}">${status.label}</span></td>
+      <td><div class="notes">${row.notes ? escapeHtml(row.notes) : '<span class="dash">—</span>'}</div></td>
+      <td>
+        <div class="acts">
+          <button type="button" class="icon-btn" data-edit="${row.id}" title="แก้ไข" aria-label="แก้ไข">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 20h4L20 8a2.8 2.8 0 0 0-4-4L4 16v4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="icon-btn danger" data-del="${row.id}" title="ลบ" aria-label="ลบ">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 7h14M10 4h4M9 7v12M15 7v12M6 7l1 13h10l1-13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const tb = $('tbody');
+  tb.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', () => copyText(b.getAttribute('data-copy'))));
+  tb.querySelectorAll('[data-copy-addr]').forEach(b => b.addEventListener('click', () => {
+    const row = rows.find(r => r.id === b.getAttribute('data-copy-addr'));
+    if(row) copyText(formatAddressBlock(row));
+  }));
+  tb.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => {
+    const row = rows.find(r => r.id === b.getAttribute('data-edit'));
+    if(row) openModal(row);
+  }));
+  tb.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => removeRow(b.getAttribute('data-del'))));
+  tb.querySelectorAll('[data-star-id]').forEach(b => b.addEventListener('click', () => {
+    updateRating(b.getAttribute('data-star-id'), parseInt(b.getAttribute('data-star-value'), 10));
+  }));
+}
+
+/* ---------- data load + realtime ---------- */
+async function loadRows(){
+  const { data, error } = await sb.from('influencers').select('*').order('created_at', {ascending:false}).limit(2000);
+  if(error){ showError('โหลดข้อมูลไม่สำเร็จ: ' + error.message); return; }
+  showError('');
+  rows = (data||[]).map(fromDb);
+  render();
+}
+
+let channel = null;
+function startRealtime(){
+  if(channel) return;
+  channel = sb.channel('influencers-live')
+    .on('postgres_changes', {event:'*', schema:'public', table:'influencers'}, () => loadRows())
+    .subscribe();
+}
+
+/* ---------- save ---------- */
+async function saveForm(e){
+  e.preventDefault();
+  const name = $('fName').value.trim();
+  const addressText = $('fAddress').value.trim();
+  if(!name || !addressText){ showToast('กรอกชื่อและที่อยู่ให้ครบก่อนบันทึก'); return; }
+
+  const payload = toDb({
+    name,
+    owner: $('fOwner').value.trim(),
+    platforms: readPlatRows(),
+    phone: $('fPhone').value.trim(),
+    lineId: $('fLine').value.trim(),
+    recipientName: $('fRecipient').value.trim(),
+    addressText,
+    followSummary: $('fFollowSummary').value.trim(),
+    status: $('fStatus').value,
+    rating: formRating,
+    notes: $('fNotes').value.trim(),
+  });
+
+  const btn = $('btnSave');
+  btn.disabled = true;
+  const q = editingId
+    ? sb.from('influencers').update(payload).eq('id', editingId)
+    : sb.from('influencers').insert(payload);
+  const { error } = await q;
+  btn.disabled = false;
+
+  if(error){ showToast('บันทึกไม่สำเร็จ: ' + error.message); return; }
+  showToast('บันทึกแล้ว');
+  closeModal();
+  loadRows();
+}
+
+async function deleteCurrent(){
+  if(!editingId) return;
+  const id = editingId;
+  closeModal();
+  removeRow(id);
+}
+
+/* ---------- csv import ---------- */
+const HEADER_ALIASES = {
+  name:['name','ชื่อ','ชื่อเล่น','ชื่อ/ชื่อเล่น','ชื่อinfluencer','influencer','ชื่ออินฟลู'],
+  owner:['owner','ผู้ดูแล','ผู้ดูแลในทีม','คนดูแล','ดูแลโดย','ผู้รับผิดชอบ'],
+  platform:['platform','แพลตฟอร์ม','ช่องทาง','โซเชียล','social'],
+  handle:['handle','ไอดี','username','user','account','บัญชี','ไอดีผู้ใช้','ชื่อบัญชี'],
+  followers:['followers','follower','ผู้ติดตาม','ยอดผู้ติดตาม','จำนวนผู้ติดตาม'],
+  phone:['phone','tel','telephone','mobile','เบอร์','เบอร์โทร','โทร','เบอร์ติดต่อ'],
+  lineId:['line','lineid','ไลน์','ไลน์ไอดี','lineไอดี'],
+  recipientName:['recipient','recipientname','ชื่อผู้รับ','ผู้รับ','ชื่อผู้รับของ','ชื่อผู้รับพัสดุ'],
+  addressText:['address','addr','ที่อยู่','ที่อยู่จัดส่ง','ที่อยู่เต็ม','ที่อยู่ส่งของ'],
+  status:['status','สถานะ'],
+  rating:['rating','star','stars','ดาว','คะแนน','เรตติ้ง'],
+  notes:['notes','note','remark','comment','หมายเหตุ','โน้ต'],
+};
+const PLATFORM_ALIASES = {
+  instagram:['instagram','ig','อินสตาแกรม','ไอจี'],
+  tiktok:['tiktok','tt','ติ๊กต่อก','ติกตอก'],
+  facebook:['facebook','fb','เฟสบุ๊ค','เฟซบุ๊ก','เฟส'],
+  youtube:['youtube','yt','ยูทูป','ยูทูบ'],
+  lemon8:['lemon8','l8','เลม่อน8'],
+  x:['x','twitter','ทวิตเตอร์','ทวิต'],
+  other:['other','อื่นๆ','อื่น'],
+};
+function normKey(s){ return String(s==null?'':s).toLowerCase().replace(/[\s_\-./()]/g,''); }
+const FIELD_BY_HEADER = {};
+Object.keys(HEADER_ALIASES).forEach(f => HEADER_ALIASES[f].forEach(a => { FIELD_BY_HEADER[normKey(a)] = f; }));
+const PLATFORM_BY_ALIAS = {};
+Object.keys(PLATFORM_ALIASES).forEach(k => PLATFORM_ALIASES[k].forEach(a => { PLATFORM_BY_ALIAS[normKey(a)] = k; }));
+PLATFORMS.forEach(p => { PLATFORM_BY_ALIAS[normKey(p.label)] = p.key; PLATFORM_BY_ALIAS[normKey(p.short)] = p.key; });
+const STATUS_BY_ALIAS = {};
+STATUSES.forEach(s => { STATUS_BY_ALIAS[normKey(s.key)] = s.key; STATUS_BY_ALIAS[normKey(s.label)] = s.key; });
+
+let importReady = [];
+
+function decodeCsvBuffer(buf){
+  try{ return new TextDecoder('utf-8', {fatal:true}).decode(buf); }
+  catch(e){
+    try{ return new TextDecoder('windows-874').decode(buf); }
+    catch(e2){ return new TextDecoder('utf-8').decode(buf); }
+  }
+}
+function detectDelimiter(text){
+  const first = text.split(/\r?\n/)[0] || '';
+  const counts = [[',',0],[';',0],['\t',0]];
+  let inQ = false;
+  for(const ch of first){
+    if(ch === '"'){ inQ = !inQ; continue; }
+    if(inQ) continue;
+    const hit = counts.find(c => c[0] === ch);
+    if(hit) hit[1]++;
+  }
+  counts.sort((a,b) => b[1]-a[1]);
+  return counts[0][1] > 0 ? counts[0][0] : ',';
+}
+function parseCsv(text, delim){
+  const out = [];
+  let cur = [], field = '', inQ = false, i = 0;
+  while(i < text.length){
+    const c = text[i];
+    if(inQ){
+      if(c === '"'){
+        if(text[i+1] === '"'){ field += '"'; i += 2; continue; }
+        inQ = false; i++; continue;
+      }
+      field += c; i++; continue;
+    }
+    if(c === '"'){ inQ = true; i++; continue; }
+    if(c === delim){ cur.push(field); field = ''; i++; continue; }
+    if(c === '\r'){ i++; continue; }
+    if(c === '\n'){ cur.push(field); out.push(cur); cur = []; field = ''; i++; continue; }
+    field += c; i++;
+  }
+  cur.push(field); out.push(cur);
+  return out.filter(r => r.some(v => String(v).trim() !== ''));
+}
+function parseRating(v){
+  const n = parseInt(String(v||'').replace(/[^0-9]/g,''), 10);
+  return isNaN(n) ? 0 : Math.max(0, Math.min(5, n));
+}
+function setImportState(html, ready){
+  importReady = ready || [];
+  $('impSummary').innerHTML = html;
+  const btn = $('btnDoImport');
+  btn.disabled = importReady.length === 0;
+  btn.textContent = importReady.length ? `นำเข้า ${importReady.length} รายการ` : 'นำเข้า';
+}
+function renderImportPreview(){
+  if(!importReady.length){ $('impPreview').innerHTML = ''; return; }
+  const head = ['ชื่อ','แพลตฟอร์ม','เบอร์โทร','ที่อยู่','สถานะ','ดาว'];
+  const body = importReady.slice(0,5).map(r => {
+    const p = (r.platforms||[])[0];
+    const pl = p ? (PLATFORM_MAP[p.platform]||PLATFORM_MAP.other).label + (p.handle ? ' · ' + p.handle : '') : '—';
+    return `<tr><td class="cell">${escapeHtml(r.name)}</td><td class="cell">${escapeHtml(pl)}</td>
+      <td class="cell">${escapeHtml(r.phone||'—')}</td><td class="cell">${escapeHtml(r.addressText)}</td>
+      <td class="cell">${escapeHtml((STATUS_MAP[r.status]||STATUSES[0]).label)}</td><td class="cell">${r.rating||0}</td></tr>`;
+  }).join('');
+  $('impPreview').innerHTML = `<div class="prev-wrap"><table><thead><tr>${
+    head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>
+    ${importReady.length > 5 ? `<div class="imp-note" style="margin-top:7px">แสดง 5 แถวแรกจาก ${importReady.length} แถว</div>` : ''}`;
+}
+function handleCsvText(text){
+  text = text.replace(/^﻿/, '');
+  const table = parseCsv(text, detectDelimiter(text));
+  if(table.length < 2){
+    setImportState('<div class="imp-note" style="color:var(--bad)">ไฟล์นี้ไม่มีข้อมูล หรือมีแค่หัวตาราง</div>', []);
+    renderImportPreview(); return;
+  }
+  const fields = table[0].map(h => FIELD_BY_HEADER[normKey(h)] || null);
+  if(!fields.includes('name') || !fields.includes('addressText')){
+    setImportState(`<div class="imp-note" style="color:var(--bad)">ไม่พบคอลัมน์ <b>ชื่อ</b> หรือ <b>ที่อยู่</b> ในแถวแรก — ตรวจหัวตารางแล้วลองอีกครั้ง<br>หัวตารางที่อ่านได้: ${
+      escapeHtml(table[0].join(' | '))}</div>`, []);
+    renderImportPreview(); return;
+  }
+  const ready = [];
+  let skipped = 0;
+  for(let r = 1; r < table.length; r++){
+    const raw = {};
+    fields.forEach((f, c) => { if(f) raw[f] = String(table[r][c]==null?'':table[r][c]).trim(); });
+    if(!raw.name || !raw.addressText){ skipped++; continue; }
+    const platKey = raw.platform ? (PLATFORM_BY_ALIAS[normKey(raw.platform)] || 'other') : 'other';
+    ready.push({
+      name: raw.name,
+      owner: raw.owner || '',
+      platforms: (raw.platform || raw.handle || raw.followers)
+        ? [{platform: platKey, handle: raw.handle||'', followers: raw.followers||''}] : [],
+      phone: raw.phone || '',
+      lineId: raw.lineId || '',
+      recipientName: raw.recipientName || '',
+      addressText: raw.addressText,
+      followSummary: '',
+      status: raw.status ? (STATUS_BY_ALIAS[normKey(raw.status)] || 'new') : 'new',
+      rating: parseRating(raw.rating),
+      notes: raw.notes || '',
+    });
+  }
+  const parts = [`<span class="badge t-good">พร้อมนำเข้า ${ready.length} รายการ</span>`];
+  if(skipped) parts.push(`<span class="badge t-warn">ข้าม ${skipped} แถว (ไม่มีชื่อหรือที่อยู่)</span>`);
+  setImportState(parts.join(''), ready);
+  renderImportPreview();
+}
+function readCsvFile(file){
+  if(!file) return;
+  if(file.size > 8 * 1024 * 1024){
+    setImportState('<div class="imp-note" style="color:var(--bad)">ไฟล์ใหญ่เกิน 8 MB ลองแบ่งไฟล์ก่อนนำเข้า</div>', []);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{ handleCsvText(decodeCsvBuffer(reader.result)); }
+    catch(e){ setImportState('<div class="imp-note" style="color:var(--bad)">อ่านไฟล์ไม่สำเร็จ ลองบันทึกเป็น CSV (UTF-8) แล้วอัปโหลดใหม่</div>', []); }
+  };
+  reader.onerror = () => setImportState('<div class="imp-note" style="color:var(--bad)">อ่านไฟล์ไม่สำเร็จ</div>', []);
+  reader.readAsArrayBuffer(file);
+}
+function openImport(){
+  setImportState('', []);
+  $('impPreview').innerHTML = '';
+  $('csvFile').value = '';
+  $('importOverlay').hidden = false;
+}
+function closeImport(){ $('importOverlay').hidden = true; }
+
+async function doImport(){
+  const list = importReady.map(toDb);
+  const btn = $('btnDoImport');
+  btn.disabled = true;
+  let ok = 0;
+  for(let i = 0; i < list.length; i += 100){
+    const chunk = list.slice(i, i+100);
+    btn.textContent = `กำลังนำเข้า ${Math.min(i+chunk.length, list.length)}/${list.length}...`;
+    const { error } = await sb.from('influencers').insert(chunk);
+    if(error){
+      showToast('นำเข้าหยุดที่แถว ' + (i+1) + ': ' + error.message);
+      break;
+    }
+    ok += chunk.length;
+  }
+  closeImport();
+  showToast(`นำเข้า ${ok} รายการเรียบร้อย`);
+  loadRows();
+}
+
+/* ---------- csv export ---------- */
+function csvCell(v){
+  const s = String(v==null?'':v);
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+}
+function exportCsv(){
+  const head = ['ชื่อ','ผู้ดูแล','แพลตฟอร์ม','ไอดี','ผู้ติดตาม','เบอร์โทร','LINE','ชื่อผู้รับ','ที่อยู่','สถานะ','ดาว','หมายเหตุ'];
+  const lines = [head.join(',')];
+  rows.forEach(r => {
+    const p = (r.platforms||[])[0] || {};
+    const meta = PLATFORM_MAP[p.platform];
+    lines.push([
+      r.name, r.owner, meta ? meta.label : '', p.handle || '', p.followers || '',
+      r.phone, r.lineId, r.recipientName, r.addressText,
+      (STATUS_MAP[r.status]||STATUSES[0]).label, r.rating || 0, r.notes,
+    ].map(csvCell).join(','));
+  });
+  const blob = new Blob(['﻿' + lines.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'nerdnua-influencer-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast('ส่งออกไฟล์ CSV แล้ว');
+}
+
+/* ---------- auth ---------- */
+function showLogin(msg){
+  $('shell').hidden = true;
+  $('loginWrap').hidden = false;
+  if(msg){ $('loginErr').hidden = false; $('loginErr').textContent = msg; }
+  else $('loginErr').hidden = true;
+}
+async function showApp(session){
+  $('loginWrap').hidden = true;
+  $('shell').hidden = false;
+  $('whoMail').textContent = session.user.email || 'เข้าสู่ระบบแล้ว';
+  await loadRows();
+  startRealtime();
+}
+async function doLogin(e){
+  e.preventDefault();
+  const btn = $('btnLogin');
+  btn.disabled = true;
+  btn.textContent = 'กำลังเข้าสู่ระบบ...';
+  const { data, error } = await sb.auth.signInWithPassword({
+    email: $('email').value.trim(),
+    password: $('password').value,
+  });
+  btn.disabled = false;
+  btn.textContent = 'เข้าสู่ระบบ';
+  if(error){
+    showLogin(/invalid/i.test(error.message) ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' : error.message);
+    return;
+  }
+  $('password').value = '';
+  showApp(data.session);
+}
+async function doLogout(){
+  if(channel){ sb.removeChannel(channel); channel = null; }
+  await sb.auth.signOut();
+  rows = [];
+  showLogin('');
+}
+
+/* ---------- boot ---------- */
+populateStatusSelect();
+renderRatingPicker();
+
+$('loginForm').addEventListener('submit', doLogin);
+$('btnLogout').addEventListener('click', doLogout);
+$('btnAdd').addEventListener('click', () => openModal(null));
+$('btnAddEmpty').addEventListener('click', () => openModal(null));
+$('btnClose').addEventListener('click', closeModal);
+$('btnCancel').addEventListener('click', closeModal);
+$('btnAddPlat').addEventListener('click', () => addPlatRow());
+$('btnDelete').addEventListener('click', deleteCurrent);
+$('modalForm').addEventListener('submit', saveForm);
+$('overlay').addEventListener('click', (e) => { if(e.target.id === 'overlay') closeModal(); });
+$('searchInput').addEventListener('input', render);
+$('sortSelect').addEventListener('change', render);
+$('btnExport').addEventListener('click', exportCsv);
+
+$('btnImport').addEventListener('click', openImport);
+$('btnImpClose').addEventListener('click', closeImport);
+$('btnImpCancel').addEventListener('click', closeImport);
+$('btnDoImport').addEventListener('click', doImport);
+$('importOverlay').addEventListener('click', (e) => { if(e.target.id === 'importOverlay') closeImport(); });
+$('btnCopyHeader').addEventListener('click', () =>
+  copyText('ชื่อ,ผู้ดูแล,แพลตฟอร์ม,ไอดี,ผู้ติดตาม,เบอร์โทร,LINE,ชื่อผู้รับ,ที่อยู่,สถานะ,ดาว,หมายเหตุ'));
+
+const dz = $('dropZone');
+dz.addEventListener('click', () => $('csvFile').click());
+$('csvFile').addEventListener('change', (e) => readCsvFile(e.target.files[0]));
+['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.remove('over'); }));
+dz.addEventListener('drop', (e) => {
+  const f = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files[0] : null;
+  if(f) readCsvFile(f);
+});
+
+document.addEventListener('keydown', (e) => {
+  if(e.key !== 'Escape') return;
+  if(!$('importOverlay').hidden) closeImport();
+  else if(!$('overlay').hidden) closeModal();
+});
+
+(async function boot(){
+  if(!CONFIGURED){
+    $('loginWrap').hidden = false;
+    $('btnLogin').disabled = true;
+    const note = $('setupNote');
+    note.hidden = false;
+    note.innerHTML = 'ยังไม่ได้ตั้งค่าเชื่อม Supabase — เปิดไฟล์นี้แล้วแก้ค่า <code>SUPABASE_URL</code> และ <code>SUPABASE_PUBLISHABLE_KEY</code> ที่ต้นแท็ก script';
+    return;
+  }
+  const { data } = await sb.auth.getSession();
+  if(data && data.session) showApp(data.session);
+  else showLogin('');
+  sb.auth.onAuthStateChange((event, session) => {
+    if(event === 'SIGNED_OUT' || !session){ if(!$('shell').hidden) showLogin(''); }
+  });
+})();
+</script>
+</body>
+</html>
