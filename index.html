@@ -133,7 +133,7 @@ select.sel:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px va
 .chip button:hover{opacity:1}
 
 .table-scroll{flex:1;overflow:auto;min-height:0}
-table{border-collapse:separate;border-spacing:0;width:100%;min-width:1020px}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:1260px}
 thead th{position:sticky;top:0;background:#fff;z-index:2;text-align:left;
   font-size:11.5px;font-weight:600;color:var(--ink-3);padding:10px 16px;
   border-bottom:1px solid var(--line);border-top:1px solid var(--line);white-space:nowrap}
@@ -180,6 +180,32 @@ tbody tr:hover{background:#FAFBFC}
 .badge.t-bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad-line)}
 .badge.t-mute{background:var(--mute-bg);color:var(--mute);border-color:var(--mute-line)}
 .badge.t-accent{background:var(--accent-soft);color:var(--accent-ink);border-color:var(--accent-line)}
+
+.stepper{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line-2);
+  border-radius:9px;padding:2px;background:#fff}
+.step-btn{width:24px;height:24px;display:grid;place-items:center;border:none;border-radius:7px;
+  background:transparent;color:var(--ink-3);transition:background .12s,color .12s}
+.step-btn:hover:not(:disabled){background:#F1F2F5;color:var(--ink)}
+.step-btn.add:hover:not(:disabled){background:var(--accent-soft);color:var(--accent-ink)}
+.step-btn:disabled{opacity:.3;cursor:not-allowed}
+.step-val{min-width:44px;text-align:center;font-size:13px;font-weight:700;
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.step-val i{font-style:normal;font-weight:500;font-size:10.5px;color:var(--ink-3);margin-left:2px}
+
+.sent-date b{display:block;font-size:12.5px;font-weight:600;white-space:nowrap}
+.sent-date span{font-size:11px;color:var(--ink-3)}
+
+.status-sel{appearance:none;border-radius:8px;padding:4px 24px 4px 10px;font-size:11.5px;
+  font-weight:600;border:1px solid transparent;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5'%3E%3Cpath d='M1 1l3.5 3 3.5-3' stroke='currentColor' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center}
+.status-sel.t-good{background-color:var(--good-bg);color:var(--good);border-color:var(--good-line)}
+.status-sel.t-info{background-color:var(--info-bg);color:var(--info);border-color:var(--info-line)}
+.status-sel.t-warn{background-color:var(--warn-bg);color:var(--warn);border-color:var(--warn-line)}
+.status-sel.t-bad{background-color:var(--bad-bg);color:var(--bad);border-color:var(--bad-line)}
+.status-sel.t-mute{background-color:var(--mute-bg);color:var(--mute);border-color:var(--mute-line)}
+.status-sel.t-accent{background-color:var(--accent-soft);color:var(--accent-ink);border-color:var(--accent-line)}
+.status-sel option{background:#fff;color:var(--ink);font-weight:500}
 
 .stars{display:inline-flex;gap:1px}
 .star-btn{background:none;border:none;padding:1px;line-height:0;color:#D6D9DF;border-radius:4px;
@@ -349,6 +375,8 @@ legend{font-size:12px;color:var(--ink-2);font-weight:600;padding:0 5px}
         <option value="new">ล่าสุดก่อน</option>
         <option value="rating-desc">ดาวมากไปน้อย</option>
         <option value="rating-asc">ดาวน้อยไปมาก</option>
+        <option value="sets-desc">ส่งเนื้อเยอะสุด</option>
+        <option value="last-sent-oldest">ห่างหายนานสุด</option>
         <option value="name">เรียงตามชื่อ</option>
       </select>
       <button class="btn" id="btnImport" type="button">
@@ -372,6 +400,8 @@ legend{font-size:12px;color:var(--ink-2);font-weight:600;padding:0 5px}
             <th>ติดต่อ</th>
             <th>ที่อยู่จัดส่ง</th>
             <th>ให้ดาว</th>
+            <th>ส่งเนื้อแล้ว</th>
+            <th>ส่งครั้งสุดท้าย</th>
             <th>สถานะ</th>
             <th>หมายเหตุ</th>
             <th style="text-align:right">จัดการ</th>
@@ -451,6 +481,17 @@ legend{font-size:12px;color:var(--ink-2);font-weight:600;padding:0 5px}
         </div>
       </div>
 
+      <div class="f2">
+        <div class="f">
+          <label>ส่งเนื้อให้แล้ว (ชุด)</label>
+          <input type="number" id="fSetsSent" min="0" step="1" placeholder="0">
+        </div>
+        <div class="f">
+          <label>ส่งครั้งสุดท้ายเมื่อ</label>
+          <input type="date" id="fLastSent">
+        </div>
+      </div>
+
       <div class="f">
         <label>ให้ดาว (คุณภาพงาน / ความน่าเชื่อถือ)</label>
         <div class="star-picker" id="fRatingPicker"></div>
@@ -490,7 +531,7 @@ legend{font-size:12px;color:var(--ink-2);font-weight:600;padding:0 5px}
 
       <div class="help">
         <b>หัวตารางที่รองรับ (แถวแรกของไฟล์)</b>
-        <code>ชื่อ, ผู้ดูแล, แพลตฟอร์ม, ไอดี, ผู้ติดตาม, เบอร์โทร, LINE, ชื่อผู้รับ, ที่อยู่, สถานะ, ดาว, หมายเหตุ</code>
+        <code>ชื่อ, ผู้ดูแล, แพลตฟอร์ม, ไอดี, ผู้ติดตาม, เบอร์โทร, LINE, ชื่อผู้รับ, ที่อยู่, สถานะ, ดาว, จำนวนชุด, ส่งครั้งสุดท้าย, หมายเหตุ</code>
         <ul>
           <li>ต้องมีคอลัมน์ <b>ชื่อ</b> และ <b>ที่อยู่</b> เป็นอย่างน้อย แถวที่ขาดสองอันนี้จะถูกข้าม</li>
           <li>1 แถว = 1 คน (1 แพลตฟอร์ม) ถ้าคนเดียวมีหลายแพลตฟอร์ม เพิ่มที่หน้าแก้ไขทีหลังได้</li>
@@ -624,6 +665,8 @@ function fromDb(r){
     followSummary: r.follow_summary || '',
     status: r.status || 'new',
     rating: r.rating || 0,
+    setsSent: r.sets_sent || 0,
+    lastSentOn: r.last_sent_on || '',
     notes: r.notes || '',
     createdAt: r.created_at,
   };
@@ -640,8 +683,34 @@ function toDb(v){
     follow_summary: v.followSummary || '',
     status: v.status || 'new',
     rating: v.rating || 0,
+    sets_sent: v.setsSent || 0,
+    last_sent_on: v.lastSentOn || null,
     notes: v.notes || '',
   };
+}
+
+const TH_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function todayIso(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function formatThaiDate(iso){
+  if(!iso) return '';
+  const [y,m,d] = String(iso).split('-').map(Number);
+  if(!y || !m || !d) return String(iso);
+  return `${d} ${TH_MONTHS[m-1]} ${y + 543}`;
+}
+function daysAgoLabel(iso){
+  if(!iso) return '';
+  const then = new Date(iso + 'T00:00:00');
+  const now = new Date(todayIso() + 'T00:00:00');
+  const diff = Math.round((now - then) / 86400000);
+  if(diff === 0) return 'วันนี้';
+  if(diff === 1) return 'เมื่อวาน';
+  if(diff < 0) return `อีก ${Math.abs(diff)} วัน`;
+  if(diff < 30) return `${diff} วันก่อน`;
+  const months = Math.floor(diff / 30);
+  return months < 12 ? `${months} เดือนก่อน` : `${Math.floor(diff/365)} ปีก่อน`;
 }
 
 /* ---------- platform rows in form ---------- */
@@ -712,6 +781,8 @@ function openModal(row){
   $('fFollowSummary').value = row?.followSummary || '';
   $('fNotes').value = row?.notes || '';
   $('fStatus').value = row?.status || 'new';
+  $('fSetsSent').value = row?.setsSent || 0;
+  $('fLastSent').value = row?.lastSentOn || '';
   formRating = row?.rating || 0;
   renderRatingPicker();
   resetPlatRows(row?.platforms);
@@ -823,6 +894,9 @@ function render(){
   const sortMode = $('sortSelect').value;
   if(sortMode === 'rating-desc') list = list.slice().sort((a,b) => (b.rating||0)-(a.rating||0));
   else if(sortMode === 'rating-asc') list = list.slice().sort((a,b) => (a.rating||0)-(b.rating||0));
+  else if(sortMode === 'sets-desc') list = list.slice().sort((a,b) => (b.setsSent||0)-(a.setsSent||0));
+  else if(sortMode === 'last-sent-oldest') list = list.slice().sort((a,b) =>
+    String(a.lastSentOn||'0000-00-00').localeCompare(String(b.lastSentOn||'0000-00-00')));
   else if(sortMode === 'name') list = list.slice().sort((a,b) => String(a.name||'').localeCompare(String(b.name||''),'th'));
 
   if(rows.length === 0){
@@ -880,7 +954,27 @@ function render(){
         <button type="button" class="copy-btn" data-copy-addr="${row.id}" ${addressBlock?'':'disabled'}>${copyIcon} คัดลอกที่อยู่</button>
       </td>
       <td>${starsHtml(row)}</td>
-      <td><span class="badge t-${status.tone}">${status.label}</span></td>
+      <td>
+        <div class="stepper">
+          <button type="button" class="step-btn" data-sets-dec="${row.id}" title="ลด 1 ชุด" aria-label="ลด 1 ชุด" ${row.setsSent ? '' : 'disabled'}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          </button>
+          <span class="step-val">${row.setsSent || 0}<i>ชุด</i></span>
+          <button type="button" class="step-btn add" data-sets-inc="${row.id}" title="ส่งเพิ่ม 1 ชุด (อัปเดตวันที่ส่งเป็นวันนี้)" aria-label="ส่งเพิ่ม 1 ชุด">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </td>
+      <td>
+        ${row.lastSentOn
+          ? `<div class="sent-date"><b>${formatThaiDate(row.lastSentOn)}</b><span>${daysAgoLabel(row.lastSentOn)}</span></div>`
+          : '<span class="dash">ยังไม่เคยส่ง</span>'}
+      </td>
+      <td>
+        <select class="status-sel t-${status.tone}" data-status-id="${row.id}" aria-label="เปลี่ยนสถานะ">
+          ${STATUSES.map(s => `<option value="${s.key}" ${s.key===row.status?'selected':''}>${s.label}</option>`).join('')}
+        </select>
+      </td>
       <td><div class="notes">${row.notes ? escapeHtml(row.notes) : '<span class="dash">—</span>'}</div></td>
       <td>
         <div class="acts">
@@ -909,6 +1003,34 @@ function render(){
   tb.querySelectorAll('[data-star-id]').forEach(b => b.addEventListener('click', () => {
     updateRating(b.getAttribute('data-star-id'), parseInt(b.getAttribute('data-star-value'), 10));
   }));
+  tb.querySelectorAll('[data-sets-inc]').forEach(b => b.addEventListener('click', () => bumpSets(b.getAttribute('data-sets-inc'), 1)));
+  tb.querySelectorAll('[data-sets-dec]').forEach(b => b.addEventListener('click', () => bumpSets(b.getAttribute('data-sets-dec'), -1)));
+  tb.querySelectorAll('[data-status-id]').forEach(sel => sel.addEventListener('change', () =>
+    changeStatus(sel.getAttribute('data-status-id'), sel.value)));
+}
+
+/* กด + = ส่งเพิ่มอีกชุด จึงถือว่าวันนี้คือวันส่งครั้งสุดท้าย (แก้วันเองได้ในหน้าแก้ไข) */
+async function bumpSets(id, delta){
+  const row = rows.find(r => r.id === id);
+  if(!row) return;
+  const next = Math.max(0, (row.setsSent || 0) + delta);
+  const patch = { sets_sent: next };
+  if(delta > 0) patch.last_sent_on = todayIso();
+
+  row.setsSent = next;
+  if(delta > 0) row.lastSentOn = todayIso();
+  render();
+
+  const { error } = await sb.from('influencers').update(patch).eq('id', id);
+  if(error){ showToast('อัปเดตจำนวนชุดไม่สำเร็จ: ' + error.message); loadRows(); }
+}
+
+async function changeStatus(id, status){
+  const row = rows.find(r => r.id === id);
+  if(row){ row.status = status; render(); }
+  const { error } = await sb.from('influencers').update({ status }).eq('id', id);
+  if(error){ showToast('เปลี่ยนสถานะไม่สำเร็จ: ' + error.message); loadRows(); }
+  else showToast('เปลี่ยนเป็น "' + (STATUS_MAP[status]||{}).label + '" แล้ว');
 }
 
 /* ---------- data load + realtime ---------- */
@@ -946,6 +1068,8 @@ async function saveForm(e){
     followSummary: $('fFollowSummary').value.trim(),
     status: $('fStatus').value,
     rating: formRating,
+    setsSent: Math.max(0, parseInt($('fSetsSent').value, 10) || 0),
+    lastSentOn: $('fLastSent').value || '',
     notes: $('fNotes').value.trim(),
   });
 
@@ -983,6 +1107,8 @@ const HEADER_ALIASES = {
   addressText:['address','addr','ที่อยู่','ที่อยู่จัดส่ง','ที่อยู่เต็ม','ที่อยู่ส่งของ'],
   status:['status','สถานะ'],
   rating:['rating','star','stars','ดาว','คะแนน','เรตติ้ง'],
+  setsSent:['setssent','sets','ชุด','จำนวนชุด','ส่งเนื้อแล้ว','ส่งแล้วกี่ชุด','ชุดที่ส่ง'],
+  lastSentOn:['lastsent','lastsenton','ส่งครั้งสุดท้าย','วันที่ส่ง','ส่งล่าสุด','วันส่งล่าสุด'],
   notes:['notes','note','remark','comment','หมายเหตุ','โน้ต'],
 };
 const PLATFORM_ALIASES = {
@@ -1050,6 +1176,26 @@ function parseRating(v){
   const n = parseInt(String(v||'').replace(/[^0-9]/g,''), 10);
   return isNaN(n) ? 0 : Math.max(0, Math.min(5, n));
 }
+function parseCount(v){
+  const n = parseInt(String(v||'').replace(/[^0-9]/g,''), 10);
+  return isNaN(n) ? 0 : Math.max(0, n);
+}
+/* รับ 2026-09-10, 10/09/2026 และปี พ.ศ. (2569 -> 2026) */
+function parseDate(v){
+  const s = String(v||'').trim();
+  if(!s) return '';
+  let y, m, d;
+  let mt = s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/);
+  if(mt){ y = +mt[1]; m = +mt[2]; d = +mt[3]; }
+  else{
+    mt = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/);
+    if(!mt) return '';
+    d = +mt[1]; m = +mt[2]; y = +mt[3];
+  }
+  if(y > 2400) y -= 543;
+  if(m < 1 || m > 12 || d < 1 || d > 31) return '';
+  return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
 function setImportState(html, ready){
   importReady = ready || [];
   $('impSummary').innerHTML = html;
@@ -1059,13 +1205,14 @@ function setImportState(html, ready){
 }
 function renderImportPreview(){
   if(!importReady.length){ $('impPreview').innerHTML = ''; return; }
-  const head = ['ชื่อ','แพลตฟอร์ม','เบอร์โทร','ที่อยู่','สถานะ','ดาว'];
+  const head = ['ชื่อ','แพลตฟอร์ม','เบอร์โทร','ที่อยู่','สถานะ','ดาว','ชุด','ส่งล่าสุด'];
   const body = importReady.slice(0,5).map(r => {
     const p = (r.platforms||[])[0];
     const pl = p ? (PLATFORM_MAP[p.platform]||PLATFORM_MAP.other).label + (p.handle ? ' · ' + p.handle : '') : '—';
     return `<tr><td class="cell">${escapeHtml(r.name)}</td><td class="cell">${escapeHtml(pl)}</td>
       <td class="cell">${escapeHtml(r.phone||'—')}</td><td class="cell">${escapeHtml(r.addressText)}</td>
-      <td class="cell">${escapeHtml((STATUS_MAP[r.status]||STATUSES[0]).label)}</td><td class="cell">${r.rating||0}</td></tr>`;
+      <td class="cell">${escapeHtml((STATUS_MAP[r.status]||STATUSES[0]).label)}</td><td class="cell">${r.rating||0}</td>
+      <td class="cell">${r.setsSent||0}</td><td class="cell">${escapeHtml(r.lastSentOn||'—')}</td></tr>`;
   }).join('');
   $('impPreview').innerHTML = `<div class="prev-wrap"><table><thead><tr>${
     head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>
@@ -1103,6 +1250,8 @@ function handleCsvText(text){
       followSummary: '',
       status: raw.status ? (STATUS_BY_ALIAS[normKey(raw.status)] || 'new') : 'new',
       rating: parseRating(raw.rating),
+      setsSent: parseCount(raw.setsSent),
+      lastSentOn: parseDate(raw.lastSentOn),
       notes: raw.notes || '',
     });
   }
@@ -1159,7 +1308,7 @@ function csvCell(v){
   return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
 }
 function exportCsv(){
-  const head = ['ชื่อ','ผู้ดูแล','แพลตฟอร์ม','ไอดี','ผู้ติดตาม','เบอร์โทร','LINE','ชื่อผู้รับ','ที่อยู่','สถานะ','ดาว','หมายเหตุ'];
+  const head = ['ชื่อ','ผู้ดูแล','แพลตฟอร์ม','ไอดี','ผู้ติดตาม','เบอร์โทร','LINE','ชื่อผู้รับ','ที่อยู่','สถานะ','ดาว','จำนวนชุด','ส่งครั้งสุดท้าย','หมายเหตุ'];
   const lines = [head.join(',')];
   rows.forEach(r => {
     const p = (r.platforms||[])[0] || {};
@@ -1167,7 +1316,8 @@ function exportCsv(){
     lines.push([
       r.name, r.owner, meta ? meta.label : '', p.handle || '', p.followers || '',
       r.phone, r.lineId, r.recipientName, r.addressText,
-      (STATUS_MAP[r.status]||STATUSES[0]).label, r.rating || 0, r.notes,
+      (STATUS_MAP[r.status]||STATUSES[0]).label, r.rating || 0,
+      r.setsSent || 0, r.lastSentOn || '', r.notes,
     ].map(csvCell).join(','));
   });
   const blob = new Blob(['﻿' + lines.join('\r\n')], {type:'text/csv;charset=utf-8'});
@@ -1243,7 +1393,7 @@ $('btnImpCancel').addEventListener('click', closeImport);
 $('btnDoImport').addEventListener('click', doImport);
 $('importOverlay').addEventListener('click', (e) => { if(e.target.id === 'importOverlay') closeImport(); });
 $('btnCopyHeader').addEventListener('click', () =>
-  copyText('ชื่อ,ผู้ดูแล,แพลตฟอร์ม,ไอดี,ผู้ติดตาม,เบอร์โทร,LINE,ชื่อผู้รับ,ที่อยู่,สถานะ,ดาว,หมายเหตุ'));
+  copyText('ชื่อ,ผู้ดูแล,แพลตฟอร์ม,ไอดี,ผู้ติดตาม,เบอร์โทร,LINE,ชื่อผู้รับ,ที่อยู่,สถานะ,ดาว,จำนวนชุด,ส่งครั้งสุดท้าย,หมายเหตุ'));
 
 const dz = $('dropZone');
 dz.addEventListener('click', () => $('csvFile').click());
