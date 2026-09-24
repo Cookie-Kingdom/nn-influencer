@@ -555,10 +555,11 @@ legend{font-size:12px;color:var(--ink-2);font-weight:600;padding:0 5px}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 /* =========================================================
-   ตั้งค่าเชื่อม Supabase — แก้ 2 บรรทัดนี้ให้ตรงกับโปรเจกต์
+   ค่าสองอันนี้ถูกแทนที่ตอน build (build.js) ด้วยค่าจาก
+   Environment Variables — ไม่ต้องแก้ในไฟล์นี้
    ========================================================= */
-const SUPABASE_URL = "https://swlczyppfxhhlvuqlgwg.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_fYy-Azi2Ym0vgCOWwAKAfA_CCQljlHj";
+const SUPABASE_URL = "__SUPABASE_URL__";
+const SUPABASE_PUBLISHABLE_KEY = "__SUPABASE_PUBLISHABLE_KEY__";
 /* ========================================================= */
 
 const CONFIGURED = !SUPABASE_URL.startsWith('__') && !SUPABASE_PUBLISHABLE_KEY.startsWith('__');

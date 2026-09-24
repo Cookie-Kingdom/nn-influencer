@@ -19,14 +19,20 @@
 
 ## การตั้งค่า
 
-ค่าเชื่อมต่ออยู่ที่ต้นแท็ก `<script>` ใน `index.html`
+ค่าเชื่อมต่อเก็บใน environment variables สองตัว
 
-```js
-const SUPABASE_URL = "https://<project-ref>.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_...";
-```
+| ตัวแปร | ตัวอย่าง |
+| --- | --- |
+| `SUPABASE_URL` | `https://<project-ref>.supabase.co` |
+| `SUPABASE_PUBLISHABLE_KEY` | `sb_publishable_...` |
 
-publishable key ออกแบบมาให้เปิดเผยในฝั่ง client ได้ ความปลอดภัยจริงอยู่ที่ RLS ในฐานข้อมูล
+`build.js` จะอ่านค่าพวกนี้ไปแทนที่ placeholder ใน `index.html` แล้วเขียนผลลัพธ์ลง `dist/` — ถ้าตัวแปรไม่ครบ build จะ fail ทันทีแทนที่จะ deploy เว็บที่ใช้งานไม่ได้ออกไป
+
+บน Vercel ตั้งค่าที่ Settings → Environment Variables (build command กับ output directory ถูกกำหนดไว้แล้วใน `vercel.json`)
+
+เปลี่ยนโปรเจกต์ Supabase = แก้ค่าใน Vercel แล้ว redeploy ไม่ต้องแตะโค้ด
+
+publishable key ออกแบบมาให้เปิดเผยในฝั่ง client ได้อยู่แล้ว (สุดท้ายมันต้องถูกส่งไปถึงเบราว์เซอร์) ความปลอดภัยจริงอยู่ที่ RLS + allowlist ในฐานข้อมูล
 
 ## โครงสร้างฐานข้อมูล
 
@@ -67,6 +73,8 @@ values (lower('someone@example.com'), 'ชื่อคน');
 ## รันในเครื่อง
 
 ```bash
-python -m http.server 5500
+cp .env.example .env    # แล้วใส่ค่าจริงของโปรเจกต์ Supabase
+node build.js
+cd dist && python -m http.server 5500
 # เปิด http://localhost:5500
 ```
